@@ -10,6 +10,7 @@ node_modules/
 
 # Ignore environment files
 .env
+config.env
 
 # Ignore macOS specific files
 .DS_Store
