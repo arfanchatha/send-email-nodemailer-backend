@@ -9,6 +9,7 @@ const readdir = util.promisify(fs.readdir); // Promisify fs.readdir
 
 exports.sendEmails = async (req, res, next) => {
   const userInputData = { ...req.body };
+  console.log(userInputData);
 
   const dirName = userInputData.tempId;
 

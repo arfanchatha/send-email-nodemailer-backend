@@ -16,8 +16,7 @@ const sendEmail = async function (
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   // Configure your SMTP server settings
   const { host, port, user, pass, subject, cc, body } = userInputData;
-  // const transporter = mailTransporter(host, port, user, pass);
-  const transporter = mailTransporter();
+  const transporter = mailTransporter(host, port, user, pass);
 
   // Function to send email
   const mailOptions = {
