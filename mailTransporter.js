@@ -1,10 +1,9 @@
 const nodemailer = require("nodemailer");
 
-const mailTransporter = function (host, port = 587, user, pass) {
-  console.log(port);
+const mailTransporter = function (host, port, user, pass) {
   return nodemailer.createTransport({
     host: host,
-    port: port,
+    port: port || 587,
     secure: false,
     auth: {
       user: user,

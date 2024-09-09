@@ -2,27 +2,22 @@
 const path = require("path");
 
 const mailTransporter = require("./mailTransporter");
+const AppError = require("./errorController/appError");
+const { deleteSingleFile } = require("./controller/deleteFilesController");
 
 const sendEmail = async function (
   recipient,
   // subject,
   // body,
   attachmentPath,
-  userInputData
+  userInputData,
+  next
 ) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   // Configure your SMTP server settings
-  const { host, port, user, pass, subject, body } = userInputData;
-  const transporter = mailTransporter(host, port, user, pass);
-
-  // const transporter = nodemailer.createTransport({
-  //   host: process.env.GMAIL_HOST,
-  //   port: 587,
-  //   secure: false,
-  //   auth: {
-  //     user: process.env.GMAIL_USERNAME,
-  //     pass: process.env.GMAIL_PASSWORD,
-  //   },
-  // });
+  const { host, port, user, pass, subject, cc, body } = userInputData;
+  // const transporter = mailTransporter(host, port, user, pass);
+  const transporter = mailTransporter();
 
   // Function to send email
   const mailOptions = {
@@ -30,6 +25,7 @@ const sendEmail = async function (
     to: recipient,
     subject: subject,
     text: body,
+    cc: cc,
     attachments: [
       {
         filename: path.basename(attachmentPath),
@@ -38,10 +34,24 @@ const sendEmail = async function (
     ],
   };
 
+  if (!emailRegex.test(recipient)) {
+    // throw new Error(
+    return `Invalid recipient email ${recipient}.`;
+
+    // );
+  }
   try {
-    await transporter.sendMail(mailOptions);
-  } catch (error) {
-    throw new Error(`Failed to send email to ${recipient}.`);
+    const result = await transporter.sendMail(mailOptions);
+
+    if (result.rejected.length > 0) {
+      throw new Error(`Email to recipient ${recipient} is invalid`);
+    }
+    deleteSingleFile(attachmentPath);
+  } catch (err) {
+    console.log(err);
+    throw new Error(new AppError(`Failed to send email to ${recipient}`, 400));
+
+    // next(new AppError(`${err} Failed to send email to ${recipient}`));
   }
 };
 
