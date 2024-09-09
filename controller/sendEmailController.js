@@ -21,8 +21,11 @@ exports.sendEmails = async (req, res, next) => {
     const message = [];
 
     for (const file of files) {
-      if (path.extname(file) === ".pdf") {
-        const recipient = path.basename(file, ".pdf"); // Extract email from filename
+      
+        // const recipient = path.basename(file, ".pdf"); // Extract email from filename
+
+        const ext = path.extname(file);
+        const recipient = path.basename(file, ext);
         const attachmentPath = path.join(directoryPath, file);
 
         try {
@@ -46,7 +49,7 @@ exports.sendEmails = async (req, res, next) => {
             )
           );
         }
-      }
+      
     }
 
     deleteAllFiles(directoryPath);
