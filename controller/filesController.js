@@ -47,9 +47,9 @@ exports.upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
     // Only accept PDF files
-    if (path.extname(file.originalname).toLowerCase() !== ".pdf") {
+    // if (path.extname(file.originalname).toLowerCase() !== ".pdf") {
       return cb(new Error("Only PDF files are allowed"), false);
-    }
+    // }
     cb(null, true);
   },
 });
